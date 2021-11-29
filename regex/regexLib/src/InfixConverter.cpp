@@ -11,12 +11,6 @@ bool InfixConverter::isOperator(char c) {
   return REGEX_OPERATORS.find(c) != REGEX_OPERATORS.end();
 }
 
-bool InfixConverter::isQuantifier(char c) {
-  return c == '*' || c == '+' || c == '?';
-}
-
-bool InfixConverter::isParen(char c) { return c == '(' || c == ')'; }
-
 bool InfixConverter::isOperatorOrCloseParen(char c) {
   return isOperator(c) || c == ')';
 }
@@ -25,16 +19,26 @@ int InfixConverter::precedence(char c) {
   return REGEX_OPERATORS.find(c)->second;
 }
 
+void InfixConverter::addOperatorToOutput(std::string& output) {
+  output.push_back(operators.top());
+  operators.pop();
+}
+
+bool InfixConverter::shoudConcat(std::string::const_iterator iter, const std::string& pattern)
+{
+	return *iter != '(' && (iter + 1) != pattern.end() &&
+        !isOperatorOrCloseParen(*(iter + 1));
+}
+
 std::string InfixConverter::convert(const std::string& pattern) {
   const std::string& transformed = makeConcatExplicit(pattern);
-	std::string output;
+  std::string output;
 
   for (const char c : transformed) {
     if (isOperator(c)) {
       while (!operators.empty() && operators.top() != '(' &&
              precedence(operators.top()) >= precedence(c)) {
-        output.push_back(operators.top());
-        operators.pop();
+				addOperatorToOutput(output);
       }
       operators.push(c);
     } else if (c == '(')
@@ -42,8 +46,7 @@ std::string InfixConverter::convert(const std::string& pattern) {
     else if (c == ')') {
       while (!(operators.top() == '(')) {
         assert(!operators.empty());
-        output.push_back(operators.top());
-        operators.pop();
+				addOperatorToOutput(output);
       }
       assert(operators.top() == '(');
       operators.pop();
@@ -53,8 +56,7 @@ std::string InfixConverter::convert(const std::string& pattern) {
   }
   while (!operators.empty()) {
     assert(operators.top() != '(');
-    output.push_back(operators.top());
-    operators.pop();
+		addOperatorToOutput(output);
   }
 
   return output;
@@ -62,10 +64,9 @@ std::string InfixConverter::convert(const std::string& pattern) {
 
 std::string InfixConverter::makeConcatExplicit(const std::string& pattern) {
   std::string transformed;
-  for (auto start = pattern.begin(); start != pattern.end(); ++start) {
-    transformed.push_back(*start);
-    if (*start != '(' && (start + 1) != pattern.end() &&
-        !isOperatorOrCloseParen(*(start + 1)))
+  for (auto iter = pattern.begin(); iter != pattern.end(); ++iter) {
+    transformed.push_back(*iter);
+    if (shoudConcat(iter, pattern))
       transformed.push_back('.');
   }
   return transformed;
