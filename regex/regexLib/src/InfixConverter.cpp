@@ -5,18 +5,18 @@
 #include <map>
 
 const static std::map<char, int> REGEX_OPERATORS = {
-    {'|', 1}, {'.', 2}, {'+', 3}, {'*', 3}, {'?', 3}};
+	{'(', 1}, {'|', 2}, {'.', 3}, {'+', 4}, {'*', 4}, {'?', 4}};
 
 bool InfixConverter::isOperator(char c) {
   return REGEX_OPERATORS.find(c) != REGEX_OPERATORS.end();
 }
 
-bool InfixConverter::isOperatorOrCloseParen(char c) {
-  return isOperator(c) || c == ')';
+bool InfixConverter::isEndOfCharGroup(char c) {
+  return c != '(' && isOperator(c) || c == ')';
 }
 
 int InfixConverter::precedence(char c) {
-  return REGEX_OPERATORS.find(c)->second;
+  return isOperator(c) ? REGEX_OPERATORS.find(c)->second : 10;
 }
 
 void InfixConverter::addOperatorToOutput(std::string& output) {
@@ -27,7 +27,7 @@ void InfixConverter::addOperatorToOutput(std::string& output) {
 bool InfixConverter::shoudConcat(std::string::const_iterator iter, const std::string& pattern)
 {
 	return *iter != '(' && (iter + 1) != pattern.end() &&
-        !isOperatorOrCloseParen(*(iter + 1));
+        !isEndOfCharGroup(*(iter + 1));
 }
 
 std::string InfixConverter::convert(const std::string& pattern) {
@@ -35,25 +35,27 @@ std::string InfixConverter::convert(const std::string& pattern) {
   std::string output;
 
   for (const char c : transformed) {
-    if (isOperator(c)) {
-      while (!operators.empty() && operators.top() != '(' &&
-             precedence(operators.top()) >= precedence(c)) {
-				addOperatorToOutput(output);
-      }
-      operators.push(c);
-    } else if (c == '(')
-      operators.push(c);
-    else if (c == ')') {
-      while (!(operators.top() == '(')) {
-        assert(!operators.empty());
-				addOperatorToOutput(output);
-      }
-      assert(operators.top() == '(');
-      operators.pop();
+		if(c == '(') operators.push(c);
 
-    } else
-      output.push_back(c);
+		else if(c == ')'){
+			while(operators.top() != '('){
+				addOperatorToOutput(output);
+			}
+			operators.pop(); //pop '('
+		}
+
+		else{
+			while(!operators.empty()){
+				if(precedence(operators.top()) >= precedence(c) ){
+					addOperatorToOutput(output);
+				} else{
+					break;
+				}
+			}
+			operators.push(c);
+		}
   }
+
   while (!operators.empty()) {
     assert(operators.top() != '(');
 		addOperatorToOutput(output);

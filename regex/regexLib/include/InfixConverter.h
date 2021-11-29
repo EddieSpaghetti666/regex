@@ -7,7 +7,7 @@ class InfixConverter {
 
  private:
   bool isOperator(char c);
-	bool isOperatorOrCloseParen(char c);
+	bool isEndOfCharGroup(char c);
 	int precedence(char c);
 	void addOperatorToOutput(std::string& output);
 	bool shoudConcat(std::string::const_iterator iter, const std::string& pattern);
