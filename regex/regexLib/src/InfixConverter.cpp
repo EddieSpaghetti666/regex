@@ -26,7 +26,7 @@ void InfixConverter::addOperatorToOutput(std::string& output) {
 
 bool InfixConverter::shoudConcat(std::string::const_iterator iter, const std::string& pattern)
 {
-	return *iter != '(' && (iter + 1) != pattern.end() &&
+	return *iter != '(' && *iter != '|' && (iter + 1) != pattern.end() &&
         !isEndOfCharGroup(*(iter + 1));
 }
 

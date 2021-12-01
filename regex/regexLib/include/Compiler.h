@@ -22,10 +22,11 @@ class Compiler {
   std::string infixToPostfix(const std::string& pattern) {
     return ic.convert(pattern);
   }
-
+	
   void patch(std::vector<State**>& outList, State* const state);
   void createNormalState(const char c);
-  void concatinate();
+	void createOrState();
+  void concatinateStates();
 
 	void createFinalMatchState();
 

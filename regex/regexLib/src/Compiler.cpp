@@ -3,12 +3,17 @@
 #include <stack>
 
 State* Compiler::compile(const std::string& pattern) {
+	if(pattern == "") return nullptr;
+
   const std::string postfixRegex = infixToPostfix(pattern);
   for (char c : postfixRegex) {
     switch (c) {
       case '.':
-        concatinate();
+        concatinateStates();
         break;
+			case '|':
+				createOrState();
+				break;
       default:
         createNormalState(c);
         break;
@@ -30,7 +35,20 @@ void Compiler::createNormalState(const char c) {
   NFAfrags.push(frag);
 }
 
-void Compiler::concatinate() {
+void Compiler::createOrState()
+{
+	Frag f2 = NFAfrags.top();
+  NFAfrags.pop();
+  Frag f1 = NFAfrags.top();
+  NFAfrags.pop();
+
+	State* orState = new State(State::SWITCH, '\0', f1.start, f2.start);
+	std::copy(f1.outList.begin(), f1.outList.end(), std::back_inserter(f2.outList));
+	Frag newFrag = {orState, f2.outList};
+	NFAfrags.push(newFrag);
+}
+
+void Compiler::concatinateStates() {
   Frag f2 = NFAfrags.top();
   NFAfrags.pop();
   Frag f1 = NFAfrags.top();
