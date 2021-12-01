@@ -1,5 +1,6 @@
 #include <Red.h>
 #include <Compiler.h>
+#include <NFASimulator.h>
 
 #include "gtest/gtest.h"
 TEST(Regex, emptyString) { ASSERT_FALSE(Red::match("", "test")); }
@@ -23,9 +24,19 @@ TEST(InfixToPostfix, harderPatterns){
 	EXPECT_EQ("ab+c*.a?..d+.e.", ic.convert("a(b+c*a?)d+e"));
 }
 
-TEST(NFACompilation, basicConcat){
+TEST(RegexMatch, basicPass){
 	InfixConverter ic;
-	Compiler compiler(ic);
+	Compiler c(ic);
+	const auto NFA = c.compile("abc");
+	NFASimulator nfs;
+	EXPECT_TRUE(nfs.match(NFA, "abc"));
 
-	compiler.compile("abc");
+}
+
+TEST(RegexMatch, basicFail){
+	InfixConverter ic;
+	Compiler c(ic);
+	const auto NFA = c.compile("abc");
+	NFASimulator nfs;
+	EXPECT_FALSE(nfs.match(NFA, "abd"));
 }

@@ -1,3 +1,4 @@
+#pragma once
 class State {
  public:
   enum Type { DEFAULT, SWITCH, MATCH };

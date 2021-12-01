@@ -24,12 +24,14 @@
   <ItemGroup>
     <ClInclude Include="include\Compiler.h" />
     <ClInclude Include="include\InfixConverter.h" />
+    <ClInclude Include="include\NFASimulator.h" />
     <ClInclude Include="include\Red.h" />
     <ClInclude Include="include\State.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Compiler.cpp" />
     <ClCompile Include="src\InfixConverter.cpp" />
+    <ClCompile Include="src\NFASimulator.cpp" />
     <ClCompile Include="src\Red.cpp" />
     <ClCompile Include="src\State.cpp" />
   </ItemGroup>

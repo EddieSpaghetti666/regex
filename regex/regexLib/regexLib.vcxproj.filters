@@ -30,6 +30,9 @@
     <ClInclude Include="include\Compiler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\NFASimulator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Red.cpp">
@@ -42,6 +45,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\InfixConverter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NFASimulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
