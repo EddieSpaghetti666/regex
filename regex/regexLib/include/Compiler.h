@@ -28,6 +28,7 @@ class Compiler {
 	void createOrState();
   void concatinateStates();
 	void zeroOrOneState();
+  void starState();
 
 	void createFinalMatchState();
 

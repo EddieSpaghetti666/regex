@@ -99,3 +99,22 @@ TEST_F(RegexMatch, zerorOrOneLongerMatch) {
   EXPECT_TRUE(nfs.match(NFA, "abcf"));
   EXPECT_TRUE(nfs.match(NFA, "bcdfg"));
 }
+
+TEST_F(RegexMatch, starMatch){
+  const auto NFA = c.compile("a*bc");
+  EXPECT_TRUE(nfs.match(NFA, "abc"));
+  EXPECT_TRUE(nfs.match(NFA, "aaaaaaaabc"));
+  EXPECT_TRUE(nfs.match(NFA, "bc"));
+}
+
+TEST_F(RegexMatch, starNoMatch){
+  const auto NFA = c.compile("a*b*bc");
+  EXPECT_FALSE(nfs.match(NFA, "dc"));
+  EXPECT_FALSE(nfs.match(NFA, "c"));
+}
+
+TEST_F(RegexMatch, starLongerMatch){
+  const auto NFA = c.compile("a*ab*bc*");
+  EXPECT_TRUE(nfs.match(NFA, "aaaaaaabbbbbc"));
+  EXPECT_TRUE(nfs.match(NFA, "abc"));
+}

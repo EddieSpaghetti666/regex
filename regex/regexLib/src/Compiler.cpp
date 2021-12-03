@@ -17,6 +17,9 @@ State* Compiler::compile(const std::string& pattern) {
       case '?':
         zeroOrOneState();
         break;
+      case '*':
+        starState();
+        break;
       default:
         createNormalState(c);
         break;
@@ -71,6 +74,17 @@ void Compiler::zeroOrOneState() {
   frag.outList.push_back(&state->out2);
   Frag newFrag(state, frag.outList);
 
+  NFAfrags.push(newFrag);
+}
+
+void Compiler::starState()
+{
+  Frag frag = NFAfrags.top();
+  NFAfrags.pop();
+
+  State* state = new State(State::SWITCH, '\0', frag.start, nullptr );
+  patch(frag.outList, state);
+  Frag newFrag = {state, {&state->out2}};
   NFAfrags.push(newFrag);
 }
 
