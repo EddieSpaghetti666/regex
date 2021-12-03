@@ -27,6 +27,7 @@ class Compiler {
   void createNormalState(const char c);
 	void createOrState();
   void concatinateStates();
+	void zeroOrOneState();
 
 	void createFinalMatchState();
 

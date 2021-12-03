@@ -70,13 +70,32 @@ TEST_F(RegexMatch, longerOrMatch) {
 TEST_F(RegexMatch, moreOrMatching) {
   const auto NFA = c.compile("evenlonger|stillmatching");
   EXPECT_TRUE(nfs.match(NFA, "stillmatching"));
-	const auto NFA2 = c.compile("ab|ac|ad");
-	EXPECT_TRUE(nfs.match(NFA2, "ad"));
-	EXPECT_FALSE(nfs.match(NFA2, "ae"));
+  const auto NFA2 = c.compile("ab|ac|ad");
+  EXPECT_TRUE(nfs.match(NFA2, "ad"));
+  EXPECT_FALSE(nfs.match(NFA2, "ae"));
 }
 
-TEST_F(RegexMatch, longOrNoMatch){
-	const auto NFA = c.compile("long or|don't match");
-	EXPECT_FALSE(nfs.match(NFA, "longer o"));
-	EXPECT_FALSE(nfs.match(NFA, "don't matcj"));
+TEST_F(RegexMatch, longOrNoMatch) {
+  const auto NFA = c.compile("long or|don't match");
+  EXPECT_FALSE(nfs.match(NFA, "longer o"));
+  EXPECT_FALSE(nfs.match(NFA, "don't matcj"));
+}
+
+TEST_F(RegexMatch, zeroOrOneNoMatch) {
+  const auto NFA = c.compile("ab?c");
+  EXPECT_FALSE(nfs.match(NFA, "aaa"));
+}
+
+TEST_F(RegexMatch, zeroOrOneMatch) {
+  const auto NFA = c.compile("ab?c");
+  EXPECT_TRUE(nfs.match(NFA, "abc"));
+  EXPECT_TRUE(nfs.match(NFA, "ac"));
+}
+
+TEST_F(RegexMatch, zerorOrOneLongerMatch) {
+  const auto NFA = c.compile("a?b?cd?e?fg?");
+  EXPECT_TRUE(nfs.match(NFA, "cf"));
+  EXPECT_TRUE(nfs.match(NFA, "acf"));
+  EXPECT_TRUE(nfs.match(NFA, "abcf"));
+  EXPECT_TRUE(nfs.match(NFA, "bcdfg"));
 }

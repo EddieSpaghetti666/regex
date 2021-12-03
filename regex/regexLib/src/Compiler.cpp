@@ -14,6 +14,9 @@ State* Compiler::compile(const std::string& pattern) {
 			case '|':
 				createOrState();
 				break;
+			case '?':
+				zeroOrOneState();
+				break;
       default:
         createNormalState(c);
         break;
@@ -57,6 +60,18 @@ void Compiler::concatinateStates() {
 	patch(f1.outList, f2.start);
 	
 	Frag newFrag(f1.start, f2.outList);
+	NFAfrags.push(newFrag);
+}
+
+void Compiler::zeroOrOneState()
+{
+	Frag frag = NFAfrags.top();
+	NFAfrags.pop();
+
+	State* state = new State(State::SWITCH, '\0', frag.start, nullptr);
+	frag.outList.push_back(&state->out2);
+	Frag newFrag(state, frag.outList);
+
 	NFAfrags.push(newFrag);
 }
 
