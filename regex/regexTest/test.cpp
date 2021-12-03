@@ -118,3 +118,16 @@ TEST_F(RegexMatch, starLongerMatch){
   EXPECT_TRUE(nfs.match(NFA, "aaaaaaabbbbbc"));
   EXPECT_TRUE(nfs.match(NFA, "abc"));
 }
+
+TEST_F(RegexMatch, oneOrMoreMatch){
+  const auto NFA = c.compile("a+b+c");
+  EXPECT_TRUE(nfs.match(NFA, "abc"));
+  EXPECT_TRUE(nfs.match(NFA, "aaaaaaabbbbbbc"));
+  EXPECT_TRUE(nfs.match(NFA, "abbbbbbbbbbbc"));
+}
+
+TEST_F(RegexMatch, oneOrMoreNoMatch){
+  const auto NFA = c.compile("a+ab+c");
+  EXPECT_FALSE(nfs.match(NFA, "abc"));
+  EXPECT_FALSE(nfs.match(NFA, "aaaaaaaaaaac"));
+}
